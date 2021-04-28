@@ -29,7 +29,7 @@ def _read8(file: typing.BinaryIO) -> int:
     return struct.unpack("B", b)[0]
 
 
-def _readBCD(file: typing.BinaryIO) -> int:
+def _read_bcd(file: typing.BinaryIO) -> int:
     b = file.read(4)
     if b is None or len(b) != 4:
         raise EOFError
@@ -49,7 +49,7 @@ class Vgm:
     def __init__(self, f: typing.BinaryIO):
         self.file = f
         self.eof_offset = _read32(self.file)
-        self.version = _readBCD(self.file)
+        self.version = _read_bcd(self.file)
         _read32(self.file)
         self.clocks["ym2413"] = _read32(self.file)
         self.file.seek(0x30, io.SEEK_SET)
@@ -114,20 +114,20 @@ def command(cmd_id: int, f: typing.BinaryIO) -> VgmCommand:
     elif cmd_id == 0x63:
         return WaitCommand(cmd_id, 882)
     elif cmd_id == 0x66:
-        return EOSCommand(cmd_id, 882)
+        return EOSCommand(cmd_id)
     elif cmd_id == 0x67:
         buffer = f.read(6)
         # Pad to handle uint on aligned boundaries?
         (tt, ss) = struct.unpack("<xBI", buffer)
-        tt = tt
-        ss = ss
+        _ = tt
+        _ = ss
         return VgmCommand(cmd_id, f.read(ss))
     elif cmd_id == 0x68:
         buffer = f.read(11)
         (cc, ooB, ooH, ddB, ddH, ssB, ssH) = struct.unpack("<xBBHBHBH", buffer)
-        cc = cc
-        oo = (ooH * 256) + ooB
-        dd = (ddH * 256) + ddB
+        _ = cc
+        _ = (ooH * 256) + ooB
+        _ = (ddH * 256) + ddB
         ss = (ssH * 256) + ssB
         return VgmCommand(cmd_id, f.read(ss))
     elif cmd_id < 0x80:

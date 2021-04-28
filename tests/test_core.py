@@ -11,6 +11,7 @@ DATA = test_core_data.get_data()
 class TestCore(TestCase):
     def test_reader_none(self):
         with self.assertRaises(AttributeError):
+            # noinspection PyTypeChecker
             vgm.core.reader(None)
 
     def test_reader_not_vgm(self):
@@ -172,8 +173,8 @@ class TestCore(TestCase):
             vgm.core._read8(io.BytesIO(b""))
 
     def test__read_bcd(self):
-        self.assertEqual(vgm.core._readBCD(io.BytesIO(b"\x12\x34\x56\x78")), 12345678)
+        self.assertEqual(vgm.core._read_bcd(io.BytesIO(b"\x12\x34\x56\x78")), 12345678)
 
     def test__read_bcd_short(self):
         with self.assertRaises(EOFError):
-            vgm.core._readBCD(io.BytesIO(b"\x12\x34"))
+            vgm.core._read_bcd(io.BytesIO(b"\x12\x34"))

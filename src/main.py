@@ -1,7 +1,6 @@
 import argparse
 
 # Press the green button in the gutter to run the script.
-import csv
 
 import vgm.core
 
