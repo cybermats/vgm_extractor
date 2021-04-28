@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import Optional
 
 
 class VgmCommandType(Enum):
@@ -8,7 +9,7 @@ class VgmCommandType(Enum):
 
 
 class VgmCommand:
-    command_type = None
+    command_type: Optional[VgmCommandType] = None
     command_id = 0
 
     def __init__(self, cmd_id: int, payload: bytes = None):

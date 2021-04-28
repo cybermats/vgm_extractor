@@ -10,8 +10,6 @@ if __name__ == "__main__":
         "file", metavar="file", type=str, help="vgm file for extraction"
     )
 
-    t = bytearray(("VGM", 1, 2))
-
     args = parser.parse_args()
 
     vgm.core.reader(args.file)

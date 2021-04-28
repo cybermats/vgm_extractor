@@ -2,34 +2,34 @@ import gzip
 import io
 import logging
 import struct
-import typing
 
 from vgm.command import VgmCommand, WaitCommand, EOSCommand
 from vgm.ym2151 import YM2151Command
+from typing import Dict, BinaryIO, Optional, Union
 
 
-def _read32(file: typing.BinaryIO) -> int:
+def _read32(file: Union[BinaryIO, gzip.GzipFile]) -> int:
     b = file.read(4)
     if b is None or len(b) != 4:
         raise EOFError
     return struct.unpack("I", b)[0]
 
 
-def _read16(file: typing.BinaryIO) -> int:
+def _read16(file: Union[BinaryIO, gzip.GzipFile]) -> int:
     b = file.read(2)
     if b is None or len(b) != 2:
         raise EOFError
     return struct.unpack("H", b)[0]
 
 
-def _read8(file: typing.BinaryIO) -> int:
+def _read8(file: Union[BinaryIO, gzip.GzipFile]) -> int:
     b = file.read(1)
     if b is None or len(b) != 1:
         raise EOFError
     return struct.unpack("B", b)[0]
 
 
-def _read_bcd(file: typing.BinaryIO) -> int:
+def _read_bcd(file: Union[BinaryIO, gzip.GzipFile]) -> int:
     b = file.read(4)
     if b is None or len(b) != 4:
         raise EOFError
@@ -44,9 +44,9 @@ def _read_bcd(file: typing.BinaryIO) -> int:
 
 class Vgm:
     data_start = 0x40
-    clocks = {}
+    clocks: Dict[str, int] = {}
 
-    def __init__(self, f: typing.BinaryIO):
+    def __init__(self, f: Union[BinaryIO, gzip.GzipFile]):
         self.file = f
         self.eof_offset = _read32(self.file)
         self.version = _read_bcd(self.file)
@@ -82,7 +82,7 @@ class Vgm:
         return command(cmd[0], self.file)
 
 
-def command(cmd_id: int, f: typing.BinaryIO) -> VgmCommand:
+def command(cmd_id: int, f: BinaryIO) -> VgmCommand:
     if (
         (cmd_id < 0x30)
         or (cmd_id == 0x60)
@@ -150,15 +150,17 @@ def command(cmd_id: int, f: typing.BinaryIO) -> VgmCommand:
         return VgmCommand(cmd_id, f.read(4))
 
 
-def reader(vgmfile: typing.BinaryIO) -> typing.Optional[Vgm]:
+def reader(vgmfile: BinaryIO) -> Optional[Vgm]:
     logging.info(f"opening {vgmfile}")
     header = vgmfile.read(4)
 
+    temp_file: Union[BinaryIO, gzip.GzipFile] = vgmfile
+
     if header[:2] == b"\x1f\x8b":
-        vgmfile.seek(0)
-        vgmfile = gzip.open(vgmfile, "rb")
-        header = vgmfile.read(4)
+        temp_file.seek(0)
+        temp_file = gzip.open(temp_file, "rb")
+        header = temp_file.read(4)
 
     if header != b"Vgm ":
         return None
-    return Vgm(vgmfile)
+    return Vgm(temp_file)

@@ -78,7 +78,7 @@ class State:
         self.channels: List[List[Note]] = []
         for i in range(8):
             self.channels.append([])
-        self.configs = []
+        self.configs: List[Config] = []
 
         self.current_config = Config()
 
