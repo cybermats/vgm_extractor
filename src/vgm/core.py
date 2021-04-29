@@ -157,8 +157,8 @@ def reader(vgmfile: BinaryIO) -> Optional[Vgm]:
     temp_file: Union[BinaryIO, gzip.GzipFile] = vgmfile
 
     if header[:2] == b"\x1f\x8b":
-        temp_file.seek(0)
-        temp_file = gzip.open(temp_file, "rb")
+        vgmfile.seek(0)
+        temp_file = gzip.open(vgmfile, "rb")
         header = temp_file.read(4)
 
     if header != b"Vgm ":
