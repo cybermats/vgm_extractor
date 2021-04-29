@@ -1,7 +1,7 @@
 import copy
 import typing
-from enum import Enum
-from typing import Union, List, Any, Dict
+from enum import Enum, IntFlag
+from typing import Union, List, Any
 
 from vgm.command import VgmCommandType, VgmCommand
 
@@ -13,6 +13,9 @@ class YM2151Command(VgmCommand):
         super().__init__(cmd_id)
         self.reg = reg
         self.value = value
+
+    def __str__(self) -> str:
+        return f"YM2151Command(Reg: {hex(self.reg)}, Data: {hex(self.value)})"
 
 
 def create(reg: int, value: int) -> YM2151Command:
@@ -29,6 +32,13 @@ class Waveform(Enum):
     SQUARE = 1
     TRIANGLE = 2
     NOISE = 3
+
+
+class Operators(IntFlag):
+    CAR2 = 1
+    MOD2 = 2
+    CAR1 = 4
+    MOD1 = 8
 
 
 class BaseConfig:
@@ -108,7 +118,9 @@ class ChannelConfig:
         self.key_fraction: int = 0 if not other else other.key_fraction
         self.ams: int = 0 if not other else other.ams
         self.pms: int = 0 if not other else other.pms
-        self.operators: List[OperatorConfig] = [] if not other else other.operators
+        self.operators: List[OperatorConfig] = (
+            [] if not other else copy.deepcopy(other.operators)
+        )
         if not other:
             for dev in range(4):
                 self.operators.append(OperatorConfig())
@@ -134,12 +146,53 @@ class ChannelConfig:
         return ChannelConfig(self)
 
 
+class Config:
+    def __init__(
+        self,
+        base: BaseConfig = BaseConfig(),
+        channel: ChannelConfig = ChannelConfig(),
+        operators: Operators = 0,
+    ):
+        self._base = base
+        self._operators: Operators = operators
+        self._channel = channel
+
+    def __getattr__(self, item):
+        if item == "noise":
+            return self._base.noise
+        if item == "noise_freq":
+            return self._base.noise_freq
+        if item == "lfo":
+            return self._base.lfo
+        if item == "phs_md":
+            return self._base.phs_md
+        if item == "amp_md":
+            return self._base.amp_md
+        if item == "ct1":
+            return self._base.ct1
+        if item == "ct2":
+            return self._base.ct2
+        if item == "waveform":
+            return self._base.waveform
+        if item == "enabled_operators":
+            return self._operators
+
+        return getattr(self._channel, item)
+
+    def compare(self, base: BaseConfig, channel: ChannelConfig, operators: Operators):
+        return (
+            self._base == base
+            and self._channel == channel
+            and self._operators == operators
+        )
+
+
 class State:
     def __init__(self) -> None:
         self._channel_key_presses: List[List[Note]] = []
         self._channel_configs: List[ChannelConfig] = []
         self._current_base_config = BaseConfig()
-        self.configs: List[BaseConfig] = []
+        self.configs: List[Config] = []
 
         for i in range(8):
             self._channel_key_presses.append([])
@@ -154,17 +207,27 @@ class State:
 
         # Key On/Off
         if cmd.reg == 0x08:
+            op = Operators((cmd.value >> 3) & 0xF)
+            ch = cmd.value & 0x07
             config_id: int = next(
                 (
                     i
                     for (i, c) in enumerate(self.configs)
-                    if c == self._current_base_config
+                    if c.compare(
+                        self._current_base_config, self._channel_configs[ch], op
+                    )
                 ),
                 len(self.configs),
             )
 
             if len(self.configs) == config_id:
-                self.configs.append(self._current_base_config)
+                self.configs.append(
+                    Config(
+                        copy.deepcopy(self._current_base_config),
+                        copy.deepcopy(self._channel_configs[ch]),
+                        op,
+                    )
+                )
                 self._current_base_config = copy.deepcopy(self._current_base_config)
 
             note = Note(config_id)

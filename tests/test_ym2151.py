@@ -2,7 +2,7 @@ import copy
 from unittest import TestCase
 
 import vgm.ym2151
-from vgm.ym2151 import State, create, Waveform, BaseConfig
+from vgm.ym2151 import State, create, Waveform, BaseConfig, Operators
 
 
 class TestYM2151State(TestCase):
@@ -405,3 +405,97 @@ class TestConfig(TestCase):
         a = BaseConfig()
         with self.assertRaises(AttributeError):
             _ = a.foo
+
+
+class TestKeyOnSaves(TestCase):
+    def setUp(self) -> None:
+        self.state = State()
+
+    def tearDown(self) -> None:
+        self.state = None
+
+    def test_key_on_full_config(self):
+        channel = 1
+        operator = 1
+        enabled_operator = Operators.CAR1
+
+        # Add noise freq (Basic Config)
+        self.state.apply(create(0x0F, 0x1))
+        # Add Connection (Channel Config)
+        self.state.apply(create(0x20 | channel, 1))
+        # Add Phase Multiply (Operator Config)
+        self.state.apply(create(0x40 | operator << 3 | channel, 1))
+
+        self.assertEqual(len(self.state.configs), 0)
+
+        # Play note
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        self.assertEqual(len(self.state.configs), 1)
+
+        # Play note again
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        self.assertEqual(len(self.state.configs), 1)
+        # Check Noise Freq (Basic Config)
+        self.assertEqual(self.state.configs[0].noise_freq, 1)
+        # Check Connection (Channel Config)
+        self.assertEqual(self.state.configs[0].connection, 1)
+        # Check Phase Multiply (Operator Config)
+        self.assertEqual(self.state.configs[0].operators[operator].multiply, 1)
+        # Check Active Operators (Note Config)
+        self.assertEqual(self.state.configs[0].enabled_operators, enabled_operator)
+
+    def test_key_on_old_sample(self):
+        channel = 1
+        operator = 1
+        enabled_operator = Operators.CAR1
+
+        # Play note
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        self.assertEqual(len(self.state.configs), 1)
+
+        # Add noise freq (Basic Config)
+        self.state.apply(create(0x0F, 0x1))
+        # Add Connection (Channel Config)
+        self.state.apply(create(0x20 | channel, 1))
+        # Add Phase Multiply (Operator Config)
+        self.state.apply(create(0x40 | operator << 3 | channel, 1))
+
+        # Play note with new config
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        self.assertEqual(len(self.state.configs), 2)
+
+        # Add noise freq (Basic Config)
+        self.state.apply(create(0x0F, 0x0))
+        # Add Connection (Channel Config)
+        self.state.apply(create(0x20 | channel, 0))
+        # Add Phase Multiply (Operator Config)
+        self.state.apply(create(0x40 | operator << 3 | channel, 0))
+
+        # Play note again with old config
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        # Check no new configs stored
+        self.assertEqual(len(self.state.configs), 2)
+
+        # Config 0
+        # Check Noise Freq (Basic Config)
+        self.assertEqual(self.state.configs[0].noise_freq, 0)
+        # Check Connection (Channel Config)
+        self.assertEqual(self.state.configs[0].connection, 0)
+        # Check Phase Multiply (Operator Config)
+        self.assertEqual(self.state.configs[0].operators[operator].multiply, 0)
+        # Check Active Operators (Note Config)
+        self.assertEqual(self.state.configs[0].noise_freq, 0)
+        # Config 1
+        # Check Noise Freq (Basic Config)
+        self.assertEqual(self.state.configs[1].noise_freq, 1)
+        # Check Connection (Channel Config)
+        self.assertEqual(self.state.configs[1].connection, 1)
+        # Check Phase Multiply (Operator Config)
+        self.assertEqual(self.state.configs[1].operators[operator].multiply, 1)
+        # Check Active Operators (Note Config)
+        self.assertEqual(self.state.configs[1].noise_freq, 1)

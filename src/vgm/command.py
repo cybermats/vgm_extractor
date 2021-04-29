@@ -16,9 +16,15 @@ class VgmCommand:
         self.command_id = cmd_id
         self.payload = payload
 
+    def __str__(self) -> str:
+        return f"VgmCommand({hex(self.command_id)})"
+
 
 class EOSCommand(VgmCommand):
     command_type = VgmCommandType.EOS
+
+    def __str__(self) -> str:
+        return f"VgmCommand(EOS)"
 
 
 class WaitCommand(VgmCommand):
@@ -29,3 +35,6 @@ class WaitCommand(VgmCommand):
         self.samples = samples
         if cmd_id // 16 == 7:
             self.samples = cmd_id % 16 + 1
+
+    def __str__(self) -> str:
+        return f"VgmCommand(Wait: {self.samples})"
