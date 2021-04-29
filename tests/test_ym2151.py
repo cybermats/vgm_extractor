@@ -2,7 +2,9 @@ import copy
 from unittest import TestCase
 
 import vgm.ym2151
-from vgm.ym2151 import State, create, Waveform, BaseConfig, Operators
+import vgm.ym2151.config
+from vgm.ym2151.config import create, Waveform, BaseConfig, Operators
+from vgm.ym2151.state import State
 
 
 class TestYM2151State(TestCase):
@@ -254,7 +256,7 @@ class TestYM2151State(TestCase):
     def assert_single_field(
         self, reg_address: int, reg_value: int, field_name: str, expected_value: int
     ):
-        all_names = list(vars(vgm.ym2151.OperatorConfig()).keys())
+        all_names = list(vars(vgm.ym2151.config.OperatorConfig()).keys())
         self.assertTrue(field_name in all_names)
         for ch in range(8):
             for dev in range(4):
@@ -499,3 +501,21 @@ class TestKeyOnSaves(TestCase):
         self.assertEqual(self.state.configs[1].operators[operator].multiply, 1)
         # Check Active Operators (Note Config)
         self.assertEqual(self.state.configs[1].noise_freq, 1)
+
+    def test_key_on_different_notes(self):
+        channel = 1
+        operator = 1
+        enabled_operator = Operators.CAR1
+
+        # Play note
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        self.assertEqual(len(self.state.configs), 1)
+
+        # Set different note
+        self.state.apply(create(0x28, 0x1))
+
+        # Play note with new config
+        self.state.apply(create(0x08, enabled_operator << 3 | channel))
+
+        self.assertEqual(len(self.state.configs), 1)

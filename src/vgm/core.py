@@ -4,7 +4,7 @@ import logging
 import struct
 
 from vgm.command import VgmCommand, WaitCommand, EOSCommand
-from vgm.ym2151 import YM2151Command
+from vgm.ym2151.config import YM2151Command
 from typing import Dict, BinaryIO, Optional, Union
 
 
