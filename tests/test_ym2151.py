@@ -512,10 +512,22 @@ class TestKeyOnSaves(TestCase):
 
         self.assertEqual(len(self.state.configs), 1)
 
+        self.assertEqual(len(self.state.key_presses(channel)), 1)
+        self.assertEqual(self.state.key_presses(channel)[0].octave, 0)
+        self.assertEqual(self.state.key_presses(channel)[0].note, 0)
+        self.assertEqual(self.state.key_presses(channel)[0].key_fraction, 0)
+
         # Set different note
-        self.state.apply(create(0x28, 0x1))
+        self.state.apply(create(0x28 | channel, 0x1))
 
         # Play note with new config
         self.state.apply(create(0x08, enabled_operator << 3 | channel))
 
         self.assertEqual(len(self.state.configs), 1)
+        self.assertEqual(len(self.state.key_presses(channel)), 2)
+        self.assertEqual(self.state.key_presses(channel)[0].octave, 0)
+        self.assertEqual(self.state.key_presses(channel)[0].note, 0)
+        self.assertEqual(self.state.key_presses(channel)[0].key_fraction, 0)
+        self.assertEqual(self.state.key_presses(channel)[1].octave, 0)
+        self.assertEqual(self.state.key_presses(channel)[1].note, 1)
+        self.assertEqual(self.state.key_presses(channel)[1].key_fraction, 0)

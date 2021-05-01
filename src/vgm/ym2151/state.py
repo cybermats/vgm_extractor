@@ -8,6 +8,7 @@ from vgm.ym2151.config import (
     Config,
     YM2151Command,
     Operators,
+    NoteConfig,
 )
 from vgm.ym2151.note import Note
 
@@ -16,12 +17,15 @@ class State:
     def __init__(self) -> None:
         self._channel_key_presses: List[List[Note]] = []
         self._channel_configs: List[ChannelConfig] = []
+        self._note_configs: List[NoteConfig] = []
         self._current_base_config = BaseConfig()
         self.configs: List[Config] = []
+        self._samples = 0
 
         for i in range(8):
             self._channel_key_presses.append([])
             self._channel_configs.append(ChannelConfig())
+            self._note_configs.append(NoteConfig())
 
     def __getattr__(self, item: str) -> Union[int, bool, Waveform]:
         return getattr(self._current_base_config, item)
@@ -46,16 +50,20 @@ class State:
             )
 
             if len(self.configs) == config_id:
-                self.configs.append(
-                    Config(
-                        copy.deepcopy(self._current_base_config),
-                        copy.deepcopy(self._channel_configs[ch]),
-                        op,
+                if op:
+                    self.configs.append(
+                        Config(
+                            config_id,
+                            copy.deepcopy(self._current_base_config),
+                            copy.deepcopy(self._channel_configs[ch]),
+                            op,
+                        )
                     )
-                )
-                self._current_base_config = copy.deepcopy(self._current_base_config)
+                    self._current_base_config = copy.deepcopy(self._current_base_config)
+                else:
+                    config_id = -1
 
-            note = Note(config_id, self._channel_configs[ch])
+            note = Note(config_id, self._note_configs[ch], self._samples)
             self._channel_key_presses[cmd.value & 0x7].append(note)
 
         # Noise Enable, Noise Frequency
@@ -76,23 +84,20 @@ class State:
 
         # Control output & Waveform Select
         elif cmd.reg == 0x1B:
-            self._current_base_config.ct1 = (cmd.value & (1 << 6)) > 0
-            self._current_base_config.ct2 = (cmd.value & (1 << 7)) > 0
-
             self._current_base_config.waveform = Waveform(cmd.value & 0x3)
 
         elif cmd.reg & 0xF8 == 0x20:
-            self._channel_configs[channel].right = (cmd.value & (1 << 7)) > 0
-            self._channel_configs[channel].left = (cmd.value & (1 << 6)) > 0
+            self._note_configs[channel].right = (cmd.value & (1 << 7)) > 0
+            self._note_configs[channel].left = (cmd.value & (1 << 6)) > 0
             self._channel_configs[channel].fb = (cmd.value >> 3) & 0x07
             self._channel_configs[channel].connection = cmd.value & 0x07
 
         elif cmd.reg & 0xF8 == 0x28:
-            self._channel_configs[channel].octave = (cmd.value >> 4) & 0x07
-            self._channel_configs[channel].note = cmd.value & 0x0F
+            self._note_configs[channel].octave = (cmd.value >> 4) & 0x07
+            self._note_configs[channel].note = cmd.value & 0x0F
 
         elif cmd.reg & 0xF8 == 0x30:
-            self._channel_configs[channel].key_fraction = (cmd.value >> 2) & 0x3F
+            self._note_configs[channel].key_fraction = (cmd.value >> 2) & 0x3F
         elif cmd.reg & 0xF8 == 0x38:
             self._channel_configs[channel].pms = (cmd.value >> 4) & 0x07
             self._channel_configs[channel].ams = cmd.value & 0x03
@@ -143,3 +148,6 @@ class State:
 
     def channel_config(self, ch: int):
         return self._channel_configs[ch]
+
+    def beat(self, samples):
+        self._samples += samples

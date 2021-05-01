@@ -34,11 +34,11 @@ def _read_bcd(file: Union[BinaryIO, gzip.GzipFile]) -> int:
     if b is None or len(b) != 4:
         raise EOFError
     o = 0
-    for item in b:
+    for i in range(4):
+        item = b[3 - i]
         for val in (item >> 4, item & 0x0F):
             o *= 10
             o += val
-
     return o
 
 
@@ -87,7 +87,7 @@ def command(cmd_id: int, f: BinaryIO) -> VgmCommand:
         (cmd_id < 0x30)
         or (cmd_id == 0x60)
         or (0x64 <= cmd_id <= 0x65)
-        or (0x69 == cmd_id)
+        or (0x69 <= cmd_id < 0x70)
         or (0x80 <= cmd_id < 0x90)
         or (0x96 <= cmd_id < 0xA0)
     ):

@@ -173,7 +173,7 @@ class TestCore(TestCase):
             vgm.core._read8(io.BytesIO(b""))
 
     def test__read_bcd(self):
-        self.assertEqual(vgm.core._read_bcd(io.BytesIO(b"\x12\x34\x56\x78")), 12345678)
+        self.assertEqual(vgm.core._read_bcd(io.BytesIO(b"\x78\x56\x34\x12")), 12345678)
 
     def test__read_bcd_short(self):
         with self.assertRaises(EOFError):
