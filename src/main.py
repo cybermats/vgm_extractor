@@ -2,13 +2,12 @@ import argparse
 
 # Press the green button in the gutter to run the script.
 import contextlib
-import functools
 import json
 import sys
 
 import vgm.core
 from vgm.ym2151 import state, config
-from typing import Dict
+from typing import Dict, Set, List
 
 
 @contextlib.contextmanager
@@ -29,7 +28,7 @@ def smart_open(filename: str, mode: str):
             fh.close()
 
 
-def extract_tracts(s, track_filename):
+def extract_tracks(s, track_filename):
     channel_iters = [iter(s.key_presses(ch)) for ch in range(8)]
     channel_notes: Dict[int, vgm.ym2151.state.Note] = {}
     for idx, it in enumerate(channel_iters):
@@ -38,31 +37,58 @@ def extract_tracts(s, track_filename):
             channel_notes[idx] = note
         except StopIteration:
             pass
+
+    ticks_per_note = s.ticks_per_note()
     with smart_open(track_filename, "w") as fo:
-        fo.write("Samples")
+        header = ["Samples", "Row", "Pattern", "Total Row", "Fraction"]
         for i in range(8):
-            fo.write(f", Channel {i}")
-        fo.write("\n")
+            header.append(f"Channel {i+1}")
+        fo.write("{}\n".format(",".join(header)))
+
+        channel_count = 8
+        line_count = 64
+        total_row = 0
+        note_row = [""] * channel_count
+
         while len(channel_notes):
             samples = [n.sample for n in channel_notes.values()]
             current_sample = min(samples)
-            cells = [current_sample]
-            for ch in range(8):
+            current_row = current_sample // ticks_per_note
+            if current_row != total_row:
+                row = [
+                    str(current_sample),
+                    str(total_row % line_count),
+                    str(total_row // line_count),
+                    str(total_row),
+                    "{:.2}".format((current_sample / ticks_per_note) % 1),
+                ] + note_row
+                fo.write(f'{",".join(row)}\n')
+
+                while total_row + 1 < current_row:
+                    total_row += 1
+                    row = [
+                        str(current_sample),
+                        str(total_row % line_count),
+                        str(total_row // line_count),
+                        str(total_row),
+                        "{:.2}".format((current_sample / ticks_per_note) % 1),
+                    ] + [""] * channel_count
+                    fo.write(f'{",".join(row)}\n')
+
+                total_row = current_row
+                note_row = [""] * channel_count
+
+            for ch in range(channel_count):
                 if (
-                    ch not in channel_notes
-                    or channel_notes[ch].sample != current_sample
+                    ch in channel_notes
+                    and channel_notes[ch].sample // ticks_per_note == current_row
                 ):
-                    cells.append("")
-                else:
-                    cells.append(channel_notes[ch])
+                    note_row[ch] = str(channel_notes[ch])
                     try:
                         note = next(channel_iters[ch])
                         channel_notes[ch] = note
                     except StopIteration:
                         del channel_notes[ch]
-
-            fo.write(",".join([str(c) for c in cells]))
-            fo.write("\n")
 
 
 def extract_instruments(instr_filename, s):
@@ -73,47 +99,15 @@ def extract_instruments(instr_filename, s):
 
 
 def process_vgm_file(cmds):
-    s = state.State()
-
-    # curr_sample = 0
-    # ticks = {}
+    st = state.State()
 
     for cmd in cmds:
         if isinstance(cmd, config.YM2151Command):
-            s.apply(cmd)
+            st.apply(cmd)
         elif isinstance(cmd, vgm.core.WaitCommand):
-            s.beat(cmd.samples)
-    #         curr_sample += cmd.samples
-    #         ticks[curr_sample] = 1
-    #
-    # corr = []
-    # off_start = 2000
-    # off_end = 7000
-    # for shift in range(off_start, off_end):
-    #     diff = set()
-    #     for key in ticks.keys():
-    #         diff.add(key + shift)
-    #         if key in diff:
-    #             diff.remove(key)
-    #         else:
-    #             diff.add(key)
-    #
-    #     c = len(diff)
-    #     corr.append(c)
-    #     if shift % 1000 == 0:
-    #         print(shift)
-    #
-    # with open("corr.csv", "w") as f:
-    #     f.write("Offset,Correlation,Delay,TPM,BPM\n")
-    #     f.write(
-    #         "\n".join(
-    #             [
-    #                 f"{idx+off_start},{c},{(idx+off_start)/44100},{60/((idx+off_start)/44100)},{15/((idx+off_start)/44100)}"
-    #                 for (idx, c) in enumerate(corr)
-    #             ]
-    #         )
-    #     )
-    return s
+            st.beat(cmd.samples)
+
+    return st
 
 
 def main(vgm_filename: str, instr_filename: str, track_filename: str):
@@ -125,7 +119,7 @@ def main(vgm_filename: str, instr_filename: str, track_filename: str):
 
         extract_instruments(instr_filename, s)
 
-        extract_tracts(s, track_filename)
+        extract_tracks(s, track_filename)
 
 
 if __name__ == "__main__":

@@ -40,4 +40,7 @@ class Note:
         kf = ""
         if self.key_fraction > 1:
             kf = "-{:02.0f}".format(self.key_fraction * 1.6)
-        return f"{note}-{self.octave}{kf} [{self.config_id}]"
+        pan = ""
+        if not self.right or not self.left:
+            pan = "Pan {}".format("R" if self.right else "L")
+        return f"{note}-{self.octave}{kf} [{self.config_id}] {pan}"

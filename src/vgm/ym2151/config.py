@@ -25,14 +25,14 @@ class Operators(Flag):
 
     def repr_json(self):
         o = []
-        if self & Operators.CAR2:
-            o.append(Operators.CAR2.name)
-        if self & Operators.MOD2:
-            o.append(Operators.MOD2.name)
-        if self & Operators.CAR1:
-            o.append(Operators.CAR1.name)
         if self & Operators.MOD1:
             o.append(Operators.MOD1.name)
+        if self & Operators.CAR1:
+            o.append(Operators.CAR1.name)
+        if self & Operators.MOD2:
+            o.append(Operators.MOD2.name)
+        if self & Operators.CAR2:
+            o.append(Operators.CAR2.name)
         return "|".join(o)
 
 
@@ -46,9 +46,7 @@ class BaseConfig:
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, BaseConfig):
             return (
-                self.noise == other.noise
-                and self.noise_freq == other.noise_freq
-                and self.lfo == other.lfo
+                self.lfo == other.lfo
                 and self.phs_md == other.phs_md
                 and self.amp_md == other.amp_md
                 and self.waveform == other.waveform
@@ -99,7 +97,19 @@ class OperatorConfig:
         return OperatorConfig(self)
 
     def repr_json(self):
-        return self.__dict__
+        return {
+            "tl": self.total_level,
+            "ar": self.attack_rate,
+            "d1r": self.first_decay_rate,
+            "d1l": self.first_decay_level,
+            "d2r": self.second_decay_rate,
+            "rr": self.release_rate,
+            "ks": self.key_scale,
+            "mul": self.multiply,
+            "dt1": self.first_detune,
+            "dt2": self.second_detune,
+            "ase": self.ase,
+        }
 
 
 class NoteConfig:
@@ -140,13 +150,13 @@ class ChannelConfig:
         self.operators: List[OperatorConfig] = (
             [] if not other else copy.deepcopy(other.operators)
         )
-        self.noise: bool = False if not other else other.noise
-        self.noise_freq: int = 0 if not other else other.noise_freq
 
         self.fb: int = 0 if not other else other.fb
         self.ams: int = 0 if not other else other.ams
         self.pms: int = 0 if not other else other.pms
         self.connection: int = 0 if not other else other.connection
+        self.noise: bool = False if not other else other.noise
+        self.noise_freq: int = 0 if not other else other.noise_freq
 
         if not other:
             for dev in range(4):
@@ -160,6 +170,8 @@ class ChannelConfig:
                 and self.ams == other.ams
                 and self.pms == other.pms
                 and self.operators == other.operators
+                and self.noise == other.noise
+                and self.noise_freq == other.noise_freq
             )
         return NotImplemented
 
@@ -173,6 +185,8 @@ class ChannelConfig:
             "connection": self.connection,
             "ams": self.ams,
             "pms": self.pms,
+            "noise": self.noise,
+            "noise_freq": self.noise_freq,
             "m1": self.operators[0],
             "c1": self.operators[2],
             "m2": self.operators[1],
@@ -194,10 +208,6 @@ class Config:
         self._channel = channel
 
     def __getattr__(self, item):
-        if item == "noise":
-            return self._base.noise
-        if item == "noise_freq":
-            return self._base.noise_freq
         if item == "lfo":
             return self._base.lfo
         if item == "phs_md":

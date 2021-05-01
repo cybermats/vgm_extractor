@@ -1,6 +1,6 @@
 import copy
 import typing
-from typing import List, Union
+from typing import List, Union, Set
 from vgm.ym2151.config import (
     Waveform,
     ChannelConfig,
@@ -20,7 +20,8 @@ class State:
         self._note_configs: List[NoteConfig] = []
         self._current_base_config = BaseConfig()
         self.configs: List[Config] = []
-        self._samples = 0
+        self._samples: int = 0
+        self._note_beats: Set[int] = set()
 
         for i in range(8):
             self._channel_key_presses.append([])
@@ -65,11 +66,13 @@ class State:
 
             note = Note(config_id, self._note_configs[ch], self._samples)
             self._channel_key_presses[cmd.value & 0x7].append(note)
+            if config_id >= 0:
+                self._note_beats.add(self._samples)
 
         # Noise Enable, Noise Frequency
         elif cmd.reg == 0x0F:
-            self._current_base_config.noise = (cmd.value & (1 << 7)) > 0
-            self._current_base_config.noise_freq = cmd.value & 0x1F
+            self._channel_configs[7].noise = (cmd.value & (1 << 7)) > 0
+            self._channel_configs[7].noise_freq = cmd.value & 0x1F
 
         # LFO - Low Frequency Oscillator
         elif cmd.reg == 0x18:
@@ -146,8 +149,58 @@ class State:
     def key_presses(self, ch: int) -> typing.List[Note]:
         return self._channel_key_presses[ch]
 
-    def channel_config(self, ch: int):
+    def channel_config(self, ch: int) -> ChannelConfig:
         return self._channel_configs[ch]
 
-    def beat(self, samples):
+    def beat(self, samples) -> None:
         self._samples += samples
+
+    def ticks(self) -> List[int]:
+        return sorted(list(self._note_beats))
+
+    def ticks_per_note(self) -> int:
+        corr: List[int] = []
+
+        off_start = 1000
+        off_end = 8000
+
+        multiplier = 4
+        top_ticks = off_end * multiplier
+
+        ticks = [t for t in self.ticks() if t < top_ticks]
+
+        for shift in range(off_start, off_end):
+            t_idx = 0
+            s_idx = 0
+
+            sym_diff = 0
+            try:
+                t = ticks[t_idx]  # next(it_t)
+                s = ticks[s_idx] + shift  # next(it_s) + shift
+                while True:
+                    while t < s:
+                        sym_diff += 1
+                        t_idx += 1
+                        t = ticks[t_idx]
+                    while s < t:
+                        sym_diff += 1
+                        s_idx += 1
+                        s = ticks[s_idx] + shift
+                    if t == s:
+                        t_idx += 1
+                        s_idx += 1
+                        t = ticks[t_idx]  # next(it_t)
+                        s = ticks[s_idx] + shift  # next(it_s) + shift
+
+            except IndexError:
+                pass
+
+            corr.append(sym_diff)
+            if shift % 1000 == 0:
+                print(shift)
+
+        top_ten = sorted(
+            [(idx + off_start, c) for idx, c in enumerate(corr)], key=lambda i: i[1]
+        )
+        print(top_ten[:10])
+        return top_ten[0][0]
