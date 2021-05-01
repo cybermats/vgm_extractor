@@ -22,6 +22,7 @@ class State:
         self.configs: List[Config] = []
         self._samples: int = 0
         self._note_beats: Set[int] = set()
+        self._first_beat = None
 
         for i in range(8):
             self._channel_key_presses.append([])
@@ -64,8 +65,12 @@ class State:
                 else:
                     config_id = -1
 
-            note = Note(config_id, self._note_configs[ch], self._samples)
-            self._channel_key_presses[cmd.value & 0x7].append(note)
+            if op and not self._first_beat:
+                self._first_beat = self._samples
+
+            if self._first_beat:
+                note = Note(config_id, self._note_configs[ch], self._samples)
+                self._channel_key_presses[cmd.value & 0x7].append(note)
             if config_id >= 0:
                 self._note_beats.add(self._samples)
 
@@ -158,16 +163,17 @@ class State:
     def ticks(self) -> List[int]:
         return sorted(list(self._note_beats))
 
-    def ticks_per_note(self) -> int:
+    def ticks_per_note(self, *, show_progress=False) -> int:
         corr: List[int] = []
 
         off_start = 1000
-        off_end = 8000
+        off_end = 16000
 
         multiplier = 4
         top_ticks = off_end * multiplier
 
         ticks = [t for t in self.ticks() if t < top_ticks]
+        progress = 0
 
         for shift in range(off_start, off_end):
             t_idx = 0
@@ -196,11 +202,23 @@ class State:
                 pass
 
             corr.append(sym_diff)
-            if shift % 1000 == 0:
-                print(shift)
+            if (
+                show_progress
+                and ((shift - off_start) / (off_end - off_start)) * 100 > progress
+            ):
+                progress += 10
+                print(".", end="")
 
-        top_ten = sorted(
-            [(idx + off_start, c) for idx, c in enumerate(corr)], key=lambda i: i[1]
+        if show_progress:
+            print()
+        top = sorted(
+            [
+                (idx + off_start, (c / (len(ticks) * 2 - 1)))
+                for idx, c in enumerate(corr)
+            ],
+            key=lambda i: i[1],
         )
-        print(top_ten[:10])
-        return top_ten[0][0]
+        print("Ticks Per Note estimates:")
+        for (length, prob) in top[:10]:
+            print(f"{length}: {(1-prob)*100:.2f}%")
+        return top[0][0]
