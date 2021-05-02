@@ -1,38 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseSong doc_version="65">
-  <GlobalSongData>
-    <BeatsPerMin>130</BeatsPerMin>
-    <LinesPerBeat>4</LinesPerBeat>
-    <TicksPerLine>12</TicksPerLine>
-    <SignatureNumerator>4</SignatureNumerator>
-    <SignatureDenominator>4</SignatureDenominator>
-    <MetronomeBeatsPerBar>4</MetronomeBeatsPerBar>
-    <MetronomeLinesPerBeat>0</MetronomeLinesPerBeat>
-    <ShuffleIsActive>false</ShuffleIsActive>
-    <ShuffleAmounts>
-      <ShuffleAmount>0</ShuffleAmount>
-      <ShuffleAmount>0</ShuffleAmount>
-      <ShuffleAmount>0</ShuffleAmount>
-      <ShuffleAmount>0</ShuffleAmount>
-    </ShuffleAmounts>
-    <Octave>3</Octave>
-    <LoopCoeff>4</LoopCoeff>
-    <SongName>Untitled</SongName>
-    <Artist>Somebody</Artist>
-    <ShowSongCommentsAfterLoading>false</ShowSongCommentsAfterLoading>
-    <ShowUsedAutomationsOnly>false</ShowUsedAutomationsOnly>
-    <FollowAutomations>true</FollowAutomations>
-    <SampleOffsetCompatibilityMode>false</SampleOffsetCompatibilityMode>
-    <PitchEffectsCompatibilityMode>false</PitchEffectsCompatibilityMode>
-    <GlobalTrackHeadroom>0.501187205</GlobalTrackHeadroom>
-    <PlaybackEngineVersion>6</PlaybackEngineVersion>
-    <RenderSelectionNameCounter>0</RenderSelectionNameCounter>
-    <RecordSampleNameCounter>0</RecordSampleNameCounter>
-    <NewSampleNameCounter>0</NewSampleNameCounter>
-  </GlobalSongData>
-  <RecordManager>
-    <LinkedTrackIndex>-1</LinkedTrackIndex>
-  </RecordManager>
   <Instruments>
     <Instrument>
       <SelectedPresetName>Init</SelectedPresetName>
@@ -206,7 +173,6 @@
       <ActiveGeneratorTab>Samples</ActiveGeneratorTab>
     </Instrument>
   </Instruments>
-  <SelectedInstrumentIndex>0</SelectedInstrumentIndex>
   <Tracks>
     <SequencerTrack type="SequencerTrack">
       <Name>Track 01</Name>
@@ -429,29 +395,15 @@
         <NoteColumnName/>
         <NoteColumnName/>
       </NoteColumnNames>
-      <NumberOfVisibleNoteColumns>0</NumberOfVisibleNoteColumns>
-      <NumberOfVisibleEffectColumns>1</NumberOfVisibleEffectColumns>
-      <VolumeColumnIsVisible>false</VolumeColumnIsVisible>
-      <PanningColumnIsVisible>false</PanningColumnIsVisible>
-      <DelayColumnIsVisible>false</DelayColumnIsVisible>
-      <SampleEffectColumnIsVisible>false</SampleEffectColumnIsVisible>
       <TrackRouting>0</TrackRouting>
       <GroupNestingLevel>0</GroupNestingLevel>
       <TrackDelay>0.0</TrackDelay>
       <Collapsed>false</Collapsed>
       <Visible>true</Visible>
       <FilterDevices>
-        <SelectedPresetName>Init</SelectedPresetName>
-        <SelectedPresetLibrary>Bundled Content</SelectedPresetLibrary>
-        <SelectedPresetIsModified>false</SelectedPresetIsModified>
         <Devices>
           <SendTrackMixerDevice type="SendTrackMixerDevice">
             <CustomDeviceName>Mixer</CustomDeviceName>
-            <IsMaximized>true</IsMaximized>
-            <IsSelected>false</IsSelected>
-            <SelectedPresetName>Init</SelectedPresetName>
-            <SelectedPresetLibrary>Bundled Content</SelectedPresetLibrary>
-            <SelectedPresetIsModified>false</SelectedPresetIsModified>
             <IsActive>
               <Value>1.0</Value>
               <Visualization>Device only</Visualization>
@@ -482,9 +434,6 @@
       </FilterDevices>
     </SequencerSendTrack>
   </Tracks>
-  <SelectedTrackIndex>0</SelectedTrackIndex>
-  <SpectrumTrackDisplayA>-2</SpectrumTrackDisplayA>
-  <SpectrumTrackDisplayB>-1</SpectrumTrackDisplayB>
   <PatternPool>
     <HighliteStep>0</HighliteStep>
     <DefaultPatternLength>64</DefaultPatternLength>
@@ -493,28 +442,10 @@
         <NumberOfLines>64</NumberOfLines>
         <Tracks>
           <PatternTrack type="PatternTrack">
-            <SelectedPresetName>Init</SelectedPresetName>
-            <SelectedPresetLibrary>Bundled Content</SelectedPresetLibrary>
-            <SelectedPresetIsModified>false</SelectedPresetIsModified>
-            <AliasPatternIndex>-1</AliasPatternIndex>
-            <ColorEnabled>false</ColorEnabled>
-            <Color>0,0,0</Color>
           </PatternTrack>
           <PatternMasterTrack type="PatternMasterTrack">
-            <SelectedPresetName>Init</SelectedPresetName>
-            <SelectedPresetLibrary>Bundled Content</SelectedPresetLibrary>
-            <SelectedPresetIsModified>false</SelectedPresetIsModified>
-            <AliasPatternIndex>-1</AliasPatternIndex>
-            <ColorEnabled>false</ColorEnabled>
-            <Color>0,0,0</Color>
           </PatternMasterTrack>
           <PatternSendTrack type="PatternSendTrack">
-            <SelectedPresetName>Init</SelectedPresetName>
-            <SelectedPresetLibrary>Bundled Content</SelectedPresetLibrary>
-            <SelectedPresetIsModified>false</SelectedPresetIsModified>
-            <AliasPatternIndex>-1</AliasPatternIndex>
-            <ColorEnabled>false</ColorEnabled>
-            <Color>0,0,0</Color>
           </PatternSendTrack>
         </Tracks>
       </Pattern>
@@ -529,21 +460,8 @@
         <SectionName>Untitled Section</SectionName>
       </SequenceEntry>
     </SequenceEntries>
-    <SequenceSelection>
-      <CursorPos>-1</CursorPos>
-      <RangePos>-1</RangePos>
-    </SequenceSelection>
-    <LoopSelection>
-      <CursorPos>-1</CursorPos>
-      <RangePos>-1</RangePos>
-    </LoopSelection>
-    <PatternNameWidth>0</PatternNameWidth>
-    <PatternMatrixWidth>248</PatternMatrixWidth>
-    <PatternSlotHeight>30</PatternSlotHeight>
-    <PatternSlotWidth>24</PatternSlotWidth>
     <HighliteStep>2</HighliteStep>
     <HighliteOffset>0</HighliteOffset>
     <KeepSequenceSorted>true</KeepSequenceSorted>
   </PatternSequence>
-  <LastSoloedOutMode>Active</LastSoloedOutMode>
 </RenoiseSong>
