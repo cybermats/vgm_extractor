@@ -6,259 +6,33 @@
   </Instruments>
   <Tracks>
     <SequencerTrack type="SequencerTrack">
-      <Name>Track 01</Name>
-      <Color>166,41,41</Color>
-      <ColorBlend>0.0</ColorBlend>
-      <State>Active</State>
-      <Soloed>false</Soloed>
-      <NoteColumnStates>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-      </NoteColumnStates>
-      <NoteColumnNames>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-      </NoteColumnNames>
-      <NumberOfVisibleNoteColumns>1</NumberOfVisibleNoteColumns>
-      <NumberOfVisibleEffectColumns>1</NumberOfVisibleEffectColumns>
-      <VolumeColumnIsVisible>true</VolumeColumnIsVisible>
-      <PanningColumnIsVisible>false</PanningColumnIsVisible>
-      <DelayColumnIsVisible>false</DelayColumnIsVisible>
-      <SampleEffectColumnIsVisible>false</SampleEffectColumnIsVisible>
-      <TrackRouting>0</TrackRouting>
-      <GroupNestingLevel>0</GroupNestingLevel>
-      <TrackDelay>0.0</TrackDelay>
-      <Collapsed>false</Collapsed>
-      <Visible>true</Visible>
       <FilterDevices>
         <Devices>
           <TrackMixerDevice type="TrackMixerDevice">
-            <CustomDeviceName>Mixer</CustomDeviceName>
-            <IsMaximized>true</IsMaximized>
-            <IsSelected>false</IsSelected>
-            <IsActive>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </IsActive>
-            <Panning>
-              <Value>0.5</Value>
-              <Visualization>Device only</Visualization>
-            </Panning>
-            <Volume>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </Volume>
-            <Surround>
-              <Value>0.0</Value>
-              <Visualization>Device only</Visualization>
-            </Surround>
-            <PostPanning>
-              <Value>0.5</Value>
-              <Visualization>Device only</Visualization>
-            </PostPanning>
-            <PostVolume>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </PostVolume>
-            <SmoothParameterChanges>true</SmoothParameterChanges>
           </TrackMixerDevice>
         </Devices>
       </FilterDevices>
     </SequencerTrack>
     <SequencerMasterTrack type="SequencerMasterTrack">
-      <Name>Mst</Name>
-      <Color>220,220,220</Color>
-      <ColorBlend>0.0</ColorBlend>
-      <State>Active</State>
-      <Soloed>false</Soloed>
-      <NoteColumnStates>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-      </NoteColumnStates>
-      <NoteColumnNames>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-      </NoteColumnNames>
-      <NumberOfVisibleNoteColumns>0</NumberOfVisibleNoteColumns>
-      <NumberOfVisibleEffectColumns>1</NumberOfVisibleEffectColumns>
-      <VolumeColumnIsVisible>false</VolumeColumnIsVisible>
-      <PanningColumnIsVisible>false</PanningColumnIsVisible>
-      <DelayColumnIsVisible>false</DelayColumnIsVisible>
-      <SampleEffectColumnIsVisible>false</SampleEffectColumnIsVisible>
-      <TrackRouting>0</TrackRouting>
-      <GroupNestingLevel>0</GroupNestingLevel>
-      <TrackDelay>0.0</TrackDelay>
-      <Collapsed>false</Collapsed>
-      <Visible>true</Visible>
       <FilterDevices>
         <Devices>
           <MasterTrackMixerDevice type="MasterTrackMixerDevice">
-            <CustomDeviceName>Mixer &amp; Transport</CustomDeviceName>
-            <IsMaximized>true</IsMaximized>
-            <IsSelected>false</IsSelected>
-            <IsActive>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </IsActive>
-            <Panning>
-              <Value>0.5</Value>
-              <Visualization>Device only</Visualization>
-            </Panning>
-            <Volume>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </Volume>
-            <Surround>
-              <Value>0.0</Value>
-              <Visualization>Device only</Visualization>
-            </Surround>
-            <PostPanning>
-              <Value>0.5</Value>
-              <Visualization>Device only</Visualization>
-            </PostPanning>
-            <PostVolume>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </PostVolume>
-            <SmoothParameterChanges>true</SmoothParameterChanges>
-            <AutoDcCorrection>false</AutoDcCorrection>
-            <SoftClipping>false</SoftClipping>
-            <AutoGain>false</AutoGain>
-            <BpmAutomator>
-              <Value>130</Value>
-              <Visualization>Device only</Visualization>
-            </BpmAutomator>
-            <LpbAutomator>
-              <Value>4</Value>
-              <Visualization>Device only</Visualization>
-            </LpbAutomator>
-            <TplAutomator>
-              <Value>12</Value>
-              <Visualization>Device only</Visualization>
-            </TplAutomator>
           </MasterTrackMixerDevice>
         </Devices>
       </FilterDevices>
     </SequencerMasterTrack>
     <SequencerSendTrack type="SequencerSendTrack">
-      <Name>S01</Name>
-      <Color>41,166,153</Color>
-      <ColorBlend>0.0</ColorBlend>
-      <State>Active</State>
-      <Soloed>false</Soloed>
-      <NoteColumnStates>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-        <NoteColumnState>Active</NoteColumnState>
-      </NoteColumnStates>
-      <NoteColumnNames>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-        <NoteColumnName/>
-      </NoteColumnNames>
-      <TrackRouting>0</TrackRouting>
-      <GroupNestingLevel>0</GroupNestingLevel>
-      <TrackDelay>0.0</TrackDelay>
-      <Collapsed>false</Collapsed>
-      <Visible>true</Visible>
       <FilterDevices>
         <Devices>
           <SendTrackMixerDevice type="SendTrackMixerDevice">
-            <CustomDeviceName>Mixer</CustomDeviceName>
-            <IsActive>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </IsActive>
-            <Panning>
-              <Value>0.5</Value>
-              <Visualization>Device only</Visualization>
-            </Panning>
-            <Volume>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </Volume>
-            <Surround>
-              <Value>0.0</Value>
-              <Visualization>Device only</Visualization>
-            </Surround>
-            <PostPanning>
-              <Value>0.5</Value>
-              <Visualization>Device only</Visualization>
-            </PostPanning>
-            <PostVolume>
-              <Value>1.0</Value>
-              <Visualization>Device only</Visualization>
-            </PostVolume>
-            <SmoothParameterChanges>true</SmoothParameterChanges>
           </SendTrackMixerDevice>
         </Devices>
       </FilterDevices>
     </SequencerSendTrack>
   </Tracks>
   <PatternPool>
-    <HighliteStep>0</HighliteStep>
-    <DefaultPatternLength>64</DefaultPatternLength>
     <Patterns>
       <Pattern>
-        <NumberOfLines>64</NumberOfLines>
         <Tracks>
           <PatternTrack type="PatternTrack">
           </PatternTrack>
@@ -271,16 +45,7 @@
     </Patterns>
   </PatternPool>
   <PatternSequence>
-    <CurrentPosition>0</CurrentPosition>
     <SequenceEntries>
-      <SequenceEntry>
-        <Pattern>0</Pattern>
-        <IsSectionStart>false</IsSectionStart>
-        <SectionName>Untitled Section</SectionName>
-      </SequenceEntry>
     </SequenceEntries>
-    <HighliteStep>2</HighliteStep>
-    <HighliteOffset>0</HighliteOffset>
-    <KeepSequenceSorted>true</KeepSequenceSorted>
   </PatternSequence>
 </RenoiseSong>
