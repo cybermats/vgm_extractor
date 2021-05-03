@@ -19646,7 +19646,7 @@ class Pattern:
             metadata={
                 "name": "PatternTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         pattern_group_track: List[PatternGroupTrack] = field(
@@ -19654,7 +19654,7 @@ class Pattern:
             metadata={
                 "name": "PatternGroupTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         pattern_master_track: List[PatternMasterTrack] = field(
@@ -19662,7 +19662,7 @@ class Pattern:
             metadata={
                 "name": "PatternMasterTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         pattern_send_track: List[PatternSendTrack] = field(
@@ -19670,7 +19670,7 @@ class Pattern:
             metadata={
                 "name": "PatternSendTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         type: Optional[str] = field(
@@ -21901,7 +21901,7 @@ class RenoiseSong:
             metadata={
                 "name": "SequencerTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         sequencer_group_track: List[SequencerGroupTrack] = field(
@@ -21909,7 +21909,7 @@ class RenoiseSong:
             metadata={
                 "name": "SequencerGroupTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         sequencer_master_track: List[SequencerMasterTrack] = field(
@@ -21917,7 +21917,7 @@ class RenoiseSong:
             metadata={
                 "name": "SequencerMasterTrack",
                 "type": "Element",
-                "sequential": True,
+                "sequential": False,
             },
         )
         sequencer_send_track: List[SequencerSendTrack] = field(

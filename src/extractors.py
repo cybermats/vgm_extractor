@@ -2,8 +2,52 @@ import json
 from typing import Dict
 
 import vgm.ym2151
+from vgm.ym2151.state import State
+import xrns.parts.song
+import xrns.parts.pattern
+from xrns.writer import writer
 from tools import smart_open
 from vgm.ym2151 import config
+
+
+def extract_tracks_to_xrns(s: State, track_filename, ticks_per_note):
+    print(f"Writing xrns {track_filename}...")
+
+    song = xrns.parts.song.Song(tracks=8, instruments=len(s.configs))
+
+    channel_count = 8
+    sample_freq = 44100
+    notes_per_beat = 4
+    line_count = 64
+
+    note_length = ticks_per_note / sample_freq
+    beat_length = note_length * notes_per_beat
+    bpm = 60 / beat_length
+    song.globals.beats_per_min = int(bpm)
+
+    for ch in range(channel_count):
+        for n in s.key_presses(ch):
+            total_row = n.sample // ticks_per_note
+            row = total_row % line_count
+            pattern = total_row // line_count
+            instr = None
+            if n.config_id >= 0:
+                instr = f"{n.config_id:0>2X}"
+
+            pan = None
+            if not n.right or not n.left:
+                if n.right:
+                    pan = "00"
+                else:
+                    pan = "F0"
+
+            song.pattern_pool.add_note(pattern, ch, row, n.xrns_note(), instr, pan)
+
+    for p in range(len(song.pattern_pool.patterns)):
+        song.pattern_sequence.add_pattern(p)
+
+    with open(track_filename, "wb") as f:
+        writer(f, song)
 
 
 def extract_tracks(s, track_filename, ticks_per_note):

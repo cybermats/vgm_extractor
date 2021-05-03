@@ -167,7 +167,7 @@ class State:
         corr: List[int] = []
 
         off_start = 1000
-        off_end = 16000
+        off_end = 8000
 
         multiplier = 4
         top_ticks = off_end * multiplier

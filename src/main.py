@@ -3,7 +3,7 @@ import argparse
 # Press the green button in the gutter to run the script.
 
 import vgm.core
-from extractors import extract_tracks, extract_instruments
+from extractors import extract_tracks_to_xrns, extract_instruments
 from tools import smart_open
 from vgm.ym2151 import state, config
 
@@ -41,7 +41,7 @@ def main(
             extract_instruments(instr_filename, s)
 
         if track_filename:
-            extract_tracks(s, track_filename, ticks_per_note)
+            extract_tracks_to_xrns(s, track_filename, ticks_per_note)
 
 
 if __name__ == "__main__":

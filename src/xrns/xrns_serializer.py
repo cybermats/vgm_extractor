@@ -90,17 +90,18 @@ class XrnsSerializer:
 
     def _render_tracks(self, tracks: Tracks) -> dao.RenoiseSong.Tracks:
         color_iter = iter(self.config.track_colors)
-        return dao.RenoiseSong.Tracks(
-            sequencer_track=[
-                self._render_track(track, color_iter) for track in tracks.tracks
-            ],
-            sequencer_master_track=[
-                self._render_master_track(track) for track in tracks.master_tracks
-            ],
-            sequencer_send_track=[
-                self._render_send_track(track) for track in tracks.send_tracks
-            ],
+        seq_track = [self._render_track(track, color_iter) for track in tracks.tracks]
+        master_track = [
+            self._render_master_track(track) for track in tracks.master_tracks
+        ]
+        send_track = [self._render_send_track(track) for track in tracks.send_tracks]
+        output = dao.RenoiseSong.Tracks(
+            sequencer_track=seq_track,
+            sequencer_master_track=master_track,
+            sequencer_send_track=send_track,
         )
+        output.sequencer_master_track = master_track
+        return output
 
     def _render_track(
         self, track: SequencerTrack, color_iter: Iterable[str]
@@ -111,6 +112,7 @@ class XrnsSerializer:
             color_blend=0,
             state=track.state,
             soloed=track.soloed,
+            panning_column_is_visible=True,
             filter_devices=dao.TrackFilterDeviceChain(
                 devices=dao.TrackFilterDeviceChain.Devices(
                     track_mixer_device=[dao.TrackMixerDevice()]
@@ -180,7 +182,25 @@ class XrnsSerializer:
         )
 
     def _render_pattern_track(self, track: Pattern.PatternTrack) -> dao.PatternTrack:
-        return dao.PatternTrack()
+        return dao.PatternTrack(
+            lines=dao.PatternTrack.Lines(
+                line=[
+                    dao.PatternLineNode(
+                        index=idx,
+                        note_columns=dao.PatternLineNode.NoteColumns(
+                            note_column=[
+                                dao.PatternLineNoteColumnNode(
+                                    note=line.note,
+                                    instrument=line.instrument,
+                                    panning=line.pan,
+                                )
+                            ]
+                        ),
+                    )
+                    for idx, line in track.lines.items()
+                ]
+            )
+        )
 
     def _render_pattern_master_track(
         self, track: Pattern.PatternMasterTrack
@@ -207,4 +227,4 @@ class XrnsSerializer:
     def _render_sequence_entry(
         self, entry: PatternSequence.SequenceEntry
     ) -> dao.PatternSequenceEntry:
-        return dao.PatternSequenceEntry()
+        return dao.PatternSequenceEntry(pattern=entry.pattern)

@@ -12,7 +12,7 @@ _NOTE_LOOKUP: typing.Dict = {
     5: "F ",
     6: "F#",
     7: "F?",
-    8: "G",
+    8: "G ",
     9: "G#",
     10: "A ",
     11: "A?",
@@ -20,6 +20,25 @@ _NOTE_LOOKUP: typing.Dict = {
     13: "B ",
     14: "C ",
     15: "C?",
+}
+
+_NOTE_LOOKUP_XRNS: typing.Dict = {
+    0: "C#",
+    1: "D-",
+    2: "D#",
+    3: "D#",
+    4: "E-",
+    5: "F-",
+    6: "F#",
+    7: "F#",
+    8: "G-",
+    9: "G#",
+    10: "A-",
+    11: "A#",
+    12: "A#",
+    13: "B-",
+    14: "C-",
+    15: "C#",
 }
 
 
@@ -44,3 +63,13 @@ class Note:
         if not self.right or not self.left:
             pan = "Pan {}".format("R" if self.right else "L")
         return f"{note}-{self.octave}{kf} [{self.config_id}] {pan}"
+
+    def xrns_note(self):
+        if self.config_id < 0:
+            return "Off"
+        note = _NOTE_LOOKUP_XRNS[self.note]
+        octave = self.octave
+        if self.note == 14:
+            octave += 1
+
+        return f"{note}{octave}"

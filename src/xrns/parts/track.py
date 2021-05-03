@@ -19,7 +19,7 @@ class SequencerSendTrack(SequencerTrack):
 class Tracks:
     def __init__(self, tracks: int):
         self.tracks: List[SequencerTrack] = [
-            SequencerTrack(f"Track {i}") for i in range(tracks)
+            SequencerTrack(f"Track {i+1}") for i in range(tracks)
         ]
         self.master_tracks: List[SequencerMasterTrack] = [SequencerMasterTrack("Mst")]
         self.send_tracks: List[SequencerSendTrack] = [SequencerSendTrack("S01")]
