@@ -1,0 +1,2 @@
+xsdata~=21.4
+setuptools~=56.0.0
